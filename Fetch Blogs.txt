@@ -1,0 +1,43 @@
+Note: Fetch blogs in our custom PHP code from WordPress database in slick slider.
+
+
+
+<?php
+require_once('/home/codeanddesign/public_html/blogs/wp-load.php');
+
+$args = array(
+    'post_type' => 'post',
+    'posts_per_page' => 4,
+);
+
+$blog_query = new WP_Query($args);
+
+if ($blog_query->have_posts()) :
+?>
+<section class="blogSec" data-aos="fade-up" data-aos-duration="1000">
+    <div class="container">
+        <div class="content">
+            <a href="/blogs/" class="btn">blogs</a>
+            <h2>Stay updated with the latest in the digital world on our blog!</h2>
+            <p>With creative tips, tricks, and trends, each post is designed to inspire and keep you ahead of the curve.</p>
+        </div>
+        <div class="blogSlider">
+            <?php while ($blog_query->have_posts()) : $blog_query->the_post(); ?>
+                <div class="box">
+                    <!-- Featured Image -->
+                    <img src="<?php echo get_the_post_thumbnail_url(get_the_ID(), 'medium'); ?>" loading="lazy" alt="<?php the_title(); ?>">
+                    <div class="body">
+                        <span><?php echo get_the_date(); ?> | <?php echo human_time_diff(get_the_time('U'), current_time('timestamp')) . ' ago'; ?></span>
+                        <h3><?php the_title(); ?></h3>
+                        <p><?php echo wp_trim_words(get_the_excerpt(), 20); ?></p>
+                        <a href="<?php the_permalink(); ?>" class="btn">Read Article</a>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        </div>
+    </div>
+</section>
+<?php
+endif;
+wp_reset_postdata();
+?>
